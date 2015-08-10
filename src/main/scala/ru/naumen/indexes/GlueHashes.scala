@@ -42,10 +42,11 @@ class GlueHashes extends GlueIndex[GlueElement]{
 
 object GlueHashes{
   def md5sum(content: Array[Byte]): String = {
-    val digest = MessageDigest.getInstance("MD5");
+    val digest = MessageDigest.getInstance("MD5")
     digest.update(content)
     new BigInteger(1, digest.digest()).toString(16)
   }
+  def md5str(s: String) = md5sum(s.getBytes)
 }
 
 class GlueSameSearcher(val hashes: GlueHashes) extends GlueSearcher{

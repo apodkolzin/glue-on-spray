@@ -89,8 +89,6 @@ class GlueKeyExt(val key: GlueKey){
   def uname = n
   // расширение файла
   def ext = e
-
-  def id = key.fullpath
 }
 
 

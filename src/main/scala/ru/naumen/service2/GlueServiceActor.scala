@@ -52,7 +52,8 @@ object GlueServiceActor{
 
 trait GlueServiceOps{
 
-  def getById(id: String): Future[Element] = searcher[GlueServiceSercher].map[Element](_.find(id))
+  def element(id: String): Future[Element] = searcher[GlueServiceSercher].map[Element](_.find(id))
+  def unit(id: String): Future[Unit] = searcher[GlueServiceSercher].map[Unit](_.find(id).unit.orNull)
   def root(): Future[Element] = searcher[RootSearcher].map[Element](_.root)
   def find(query: String): Future[Array[Unit]] = searcher[GlueLuceneSearcher].map(_.find(query).map(unit2Unit).map(_.get))
 

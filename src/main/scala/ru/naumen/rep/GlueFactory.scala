@@ -37,7 +37,7 @@ class GlueFactoryImpl(val glue:GlueIndexes with GlueSearcherFactory) extends Glu
   }
 
   override def newFolder(key: GlueKey, parent: GlueFolder)= {
-    val folder: GlueFolder = new GlueFolder(key.id, key.name, parent, key.fullpath)
+    val folder: GlueFolder = new GlueFolder(key.name, parent, key.fullpath)
     Option(parent).foreach(_.folderMap.put(folder.name, folder))
     glue.index(folder)
     folder

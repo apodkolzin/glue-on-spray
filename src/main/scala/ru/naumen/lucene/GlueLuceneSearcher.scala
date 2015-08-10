@@ -33,7 +33,7 @@ class GlueLuceneSearcher(val index: GlueLuceneIndex, val units: GlueMetaIndex) e
 
 class GlueLuceneIndex extends GlueIndex[GlueMeta] with RamLuceneIndex[GlueMeta]{
 
-  //todo apodkolzin ошибочно ищет при перезагрузке репозитория, предположительно из-за  смены идентификаторов
+  //todo apodkolzin (?) ошибочно ищет при перезагрузке репозитория, предположительно при смене идентификаторов
   def key(meta: GlueMeta) = meta.id
   def content(meta: GlueMeta) = Seq(meta.title, meta.titleEn, meta.id) ++ meta.keywords
 

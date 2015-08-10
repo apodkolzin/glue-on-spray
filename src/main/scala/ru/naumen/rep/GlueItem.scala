@@ -17,12 +17,9 @@ import javax.xml.bind.annotation.{XmlAccessorType, XmlAccessType, XmlRootElement
  *
  */
 
-trait GlueBase {
-  def id: String
-}
+trait GlueBase
 
 trait GlueElement extends GlueBase{
-  var id: String = ""
   var unit: GlueUnit = null
   var ext: String = ""
   var name: String = ""
@@ -30,7 +27,6 @@ trait GlueElement extends GlueBase{
 }
 
 class GlueUnit (val name: String, val folder: GlueFolder, var searher: GlueSearcherFactory) extends GlueBase{
-  def id = folder.id + name  // для кеширования не возможно использовать индификатор меты metaId
   val elements = new mutable.HashMap[String, GlueElement]()
 
   def title(): String = metaElement.map(_.title).orNull
@@ -40,9 +36,6 @@ class GlueUnit (val name: String, val folder: GlueFolder, var searher: GlueSearc
   def groovy: String    = groovyElement.map(_.content).getOrElse(linkedGroovy)
   def meta = metaElement
   def metaId = meta.map(_.id).getOrElse("")
-
-//  @XmlElement def groovyFile = Option(groovy).map(s => new FileObject(name + ".groovy", "", s.getBytes)).orNull
-//  @XmlElement def birtFile   = Option(birt).map(a => new FileObject(name + ".rptdesign", "", a)).orNull
 
   private def metaElement: Option[GlueMeta]   = get(GlueUnit.meta).asInstanceOf[Option[GlueMeta]]
   private def groovyElement: Option[GlueText] = get(GlueUnit.groovy).asInstanceOf[Option[GlueText]]
@@ -82,6 +75,7 @@ class GlueText extends GlueElement{
 @XmlAccessorType( XmlAccessType.FIELD )
 @XmlRootElement(name = "Meta")
 class GlueMeta extends GlueElement{
+  val id = ""
   val uuid = ""
   val title = ""
   val titleEn = ""
@@ -90,7 +84,7 @@ class GlueMeta extends GlueElement{
   var keywords = new util.ArrayList[String]()
 }
 
-class GlueFolder(val id: String, val name: String, val parent: GlueFolder, val fullpath: String) extends GlueBase{
+class GlueFolder(val name: String, val parent: GlueFolder, val fullpath: String) extends GlueBase{
   val folderMap = new mutable.HashMap[String, GlueFolder]
   val unitMap = new mutable.HashMap[String, GlueUnit]()
 

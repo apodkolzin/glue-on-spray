@@ -1,6 +1,6 @@
 package ru.naumen.service2
 
-import ru.naumen.rep.{GlueFolder, GlueElement, GlueUnit, GlueBase}
+import ru.naumen.rep._
 import ru.naumen.indexes.GlueHashes
 import scala.collection.JavaConversions._
 
@@ -14,22 +14,32 @@ import scala.collection.JavaConversions._
  */
 object GlueServiceConverters
 {
-  type Item = {def id: String; def name: String}
+  type Item = {/*def id: String; */def name: String}
   type UUID = {def uuid: String}
 
   case class Element(id: String, name: String, parent: Option[String], children: Array[String], unit: Option[Unit])
-  case class Unit(id: String, name: String, title: Option[String], groovy: Option[String], birt: Option[String], keywords: Array[String])
+  case class Unit(id: String, name: String, folder: String, title: Option[String], groovy: Option[String], birt: Option[String], keywords: Array[String])
 
   implicit def unit2Unit(unit: GlueUnit): Option[Unit] =  Option(unit).map(u =>
     new Unit(
       u.uuid,
       u.name,
+      u.folder.fullpath,
       Option(u.title),
       Option(u.groovy),
       Option(u.birt).map(new String(_)),
       u.meta.map(_.keywords.toList.toArray).getOrElse(Array())))
 
-  implicit def item2uuid(item: Item): UUID = new { def uuid = GlueHashes.md5sum(item.id.getBytes) }
+  implicit def item2uuid(item: Item): UUID = {
+    val id: String = item match {
+      case folder:  GlueFolder  => folder.fullpath
+      case unit:    GlueUnit    => unit.folder.fullpath + unit.name
+      case element: GlueElement => element.fullpath
+    }
+    new { def uuid = GlueHashes.md5str(id) }
+
+  }
+
 
   implicit def item2Element(item: Item): Element = {
     val t: TElement = item match {

@@ -25,7 +25,7 @@ import ru.naumen.rep.GlueBase
  *
  */
 trait GlueService extends HttpService with DefaultJsonProtocol with GlueServiceOps {
-  implicit val unitMessageFormat = jsonFormat6(Unit)
+  implicit val unitMessageFormat = jsonFormat7(Unit)
   implicit val elementMessageFormat = jsonFormat5(Element)
   implicit val timeout = Timeout(15 seconds)
   implicit override def actorContext = actorRefFactory.dispatcher
@@ -33,8 +33,6 @@ trait GlueService extends HttpService with DefaultJsonProtocol with GlueServiceO
 
 
   val glueActorRef = actorRefFactory.actorOf(Props[GlueServiceActor], "glue-actor")
-
-//  override def searcher[S <: GlueSearcher : ClassTag]: Future[S] = (glueActorRef ? Searcher(of[S])).mapTo[S]
 
   override def ?(message: Any): Future[Any] = glueActorRef ? message
 
@@ -44,7 +42,12 @@ trait GlueService extends HttpService with DefaultJsonProtocol with GlueServiceO
           complete{ root() }
       } ~
       path("element" / Rest){ key =>
-            complete{getById(key)}
+            complete{element(key)}
+      } ~
+      path("unit"){
+        parameter('id.as[String]){i =>
+          complete{ unit(i) }
+        }
       } ~
       path("find") {
         parameter('query.as[String]){q =>

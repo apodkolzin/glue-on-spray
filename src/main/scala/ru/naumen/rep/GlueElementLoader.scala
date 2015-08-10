@@ -19,7 +19,6 @@ trait GlueElementLoader{
 class GlueFileLoader extends GlueElementLoader{
   override def load(key: GlueKey)(implicit extend: GlueKey => GlueKeyExt): GlueElement = {
     val el = new GlueFile()
-    el.id = key.id
     el.ext = key.ext
     el.name = key.name
     el.fullpath = key.fullpath
@@ -30,7 +29,6 @@ class GlueFileLoader extends GlueElementLoader{
 class GlueTextLoader extends GlueElementLoader{
   override def load(key: GlueKey)(implicit extend: GlueKey => GlueKeyExt): GlueElement = {
     val el = new GlueText()
-    el.id = key.id
     el.ext = key.ext
     el.name = key.name
     el.fullpath = key.fullpath
