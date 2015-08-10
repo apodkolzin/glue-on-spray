@@ -1,4 +1,4 @@
-package ru.naumen.service2
+package ru.naumen.service
 
 import ru.naumen.indexes.{GlueHashes, GlueSearcher, GlueIndex}
 import ru.naumen.rep.{GlueMeta, GlueFolder, GlueBase}

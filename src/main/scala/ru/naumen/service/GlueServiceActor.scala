@@ -1,4 +1,4 @@
-package ru.naumen.service2
+package ru.naumen.service
 
 import GlueServiceConverters._
 import ru.naumen.indexes._
@@ -9,9 +9,9 @@ import ru.naumen.rep.{GlueScanner, GlueRep}
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import ru.naumen.Boot
 import scala.reflect.ClassTag
-import ru.naumen.service2.GlueServiceConverters.Element
-import ru.naumen.service2.GlueServiceConverters.Unit
-import ru.naumen.service2.GlueServiceActor.Searcher
+import ru.naumen.service.GlueServiceConverters.Element
+import ru.naumen.service.GlueServiceConverters.Unit
+import ru.naumen.service.GlueServiceActor.Searcher
 
 
 /**

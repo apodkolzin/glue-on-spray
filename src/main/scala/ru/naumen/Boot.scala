@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 import ru.naumen.indexes.GlueIndex
 import ru.naumen.lucene.GlueLuceneIndex
 import scala.collection.mutable.ArrayBuffer
-import ru.naumen.service2.GlueService
+import ru.naumen.service.GlueService
 import spray.httpx.SprayJsonSupport._
 import com.typesafe.config.Config
 

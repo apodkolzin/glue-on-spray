@@ -1,4 +1,4 @@
-package ru.naumen.service2
+package ru.naumen.service
 
 import spray.routing.HttpService
 import spray.json.DefaultJsonProtocol
