@@ -20,9 +20,6 @@ class GlueServiceIndex extends GlueIndex[GlueBase]{
   override def clear() {ids.clear()}
 
   override def index_(item: GlueBase): Option[GlueBase] = {
-    //    item match { case meta: GlueMeta => ids(meta.id) = meta.unit }
-    if (item.isInstanceOf[GlueMeta])
-      ids(item.asInstanceOf[GlueMeta].id) = item.asInstanceOf[GlueMeta].unit
     ids(item.asInstanceOf[Item].uuid) = item
     Some(item)
   }

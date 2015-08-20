@@ -7,6 +7,7 @@ import java.io.{CharArrayWriter, BufferedWriter, File}
 import ru.naumen.indexes.GlueHashes
 import scala.collection.mutable.ArrayBuffer
 import javax.xml.bind.annotation.{XmlAccessorType, XmlAccessType, XmlRootElement}
+import java.nio.file.{Files, Paths}
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +25,10 @@ trait GlueElement extends GlueBase{
   var ext: String = ""
   var name: String = ""
   var fullpath: String = ""
+
+  def bytes: Array[Byte] = Files.readAllBytes(Paths.get(fullpath))
+
+  def text: String = Source.fromFile(new File(fullpath)).mkString
 }
 
 class GlueUnit (val name: String, val folder: GlueFolder, var searher: GlueSearcherFactory) extends GlueBase{
@@ -60,16 +65,11 @@ object GlueUnit{
 
 class GlueFile extends GlueElement{
 
-  def content(): Array[Byte] = {
-    val result = new ArrayBuffer[Byte]()
-    val source = scala.io.Source.fromFile(fullpath)
-    source.foreach(c=> result += c.toByte)
-    result.toArray
-  }
+  def content(): Array[Byte] = bytes
 }
 
 class GlueText extends GlueElement{
-  def content() = Source.fromFile(new File(fullpath)).mkString
+  def content() = text
 }
 
 @XmlAccessorType( XmlAccessType.FIELD )

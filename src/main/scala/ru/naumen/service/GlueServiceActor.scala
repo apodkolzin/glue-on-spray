@@ -1,16 +1,13 @@
 package ru.naumen.service
 
-import GlueServiceConverters._
 import ru.naumen.indexes._
 import ru.naumen.lucene.{GlueLuceneSearcher, GlueLuceneIndex}
 import scala.collection.mutable.ArrayBuffer
 import akka.actor.Actor
-import ru.naumen.rep.{GlueScanner, GlueRep}
+import ru.naumen.rep.{GlueUnit, GlueBase, GlueScanner, GlueRep}
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import ru.naumen.Boot
 import scala.reflect.ClassTag
-import ru.naumen.service.GlueServiceConverters.Element
-import ru.naumen.service.GlueServiceConverters.Unit
 import ru.naumen.service.GlueServiceActor.Searcher
 
 
@@ -51,14 +48,12 @@ object GlueServiceActor{
 }
 
 trait GlueServiceOps{
+  def element(id: String): Future[GlueBase] = searcher[GlueServiceSercher].map(_.find(id))
+  def unit(id: String): Future[GlueUnit] = searcher[GlueUnitSearcher].map(_.find(id))
+  def root(): Future[GlueBase] = searcher[RootSearcher].map(_.root)
+  def find(query: String): Future[Array[GlueUnit]] = searcher[GlueLuceneSearcher].map(_.find(query))
 
-  def element(id: String): Future[Element] = searcher[GlueServiceSercher].map[Element](_.find(id))
-  def unit(id: String): Future[Unit] = searcher[GlueServiceSercher].map[Unit](_.find(id).unit.orNull)
-  def root(): Future[Element] = searcher[RootSearcher].map[Element](_.root)
-  def find(query: String): Future[Array[Unit]] = searcher[GlueLuceneSearcher].map(_.find(query).map(unit2Unit).map(_.get))
 
-
-//  def searcher[S <: GlueSearcher: ClassTag]: Future[S]// = (glueActorRef ? Searcher(of[S])).mapTo[S]
   def searcher[S <: GlueSearcher: ClassTag]: Future[S] = (this ? Searcher(of[S])).mapTo[S]
   def ?(message: Any): Future[Any]
 

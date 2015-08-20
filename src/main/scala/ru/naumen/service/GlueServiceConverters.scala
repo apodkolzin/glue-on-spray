@@ -20,15 +20,15 @@ object GlueServiceConverters
   case class Element(id: String, name: String, parent: Option[String], children: Array[String], unit: Option[Unit])
   case class Unit(id: String, name: String, folder: String, title: Option[String], groovy: Option[String], birt: Option[String], keywords: Array[String])
 
-  implicit def unit2Unit(unit: GlueUnit): Option[Unit] =  Option(unit).map(u =>
+  implicit def unit2Unit(unit: GlueUnit): Unit =
     new Unit(
-      u.uuid,
-      u.name,
-      u.folder.fullpath,
-      Option(u.title),
-      Option(u.groovy),
-      Option(u.birt).map(new String(_)),
-      u.meta.map(_.keywords.toList.toArray).getOrElse(Array())))
+      unit.uuid,
+      unit.name,
+      unit.folder.fullpath,
+      Option(unit.title),
+      Option(unit.groovy),
+      Option(unit.birt).map(new String(_)),
+      unit.meta.map(_.keywords.toList.toArray).getOrElse(Array()))
 
   implicit def item2uuid(item: Item): UUID = {
     val id: String = item match {
@@ -56,7 +56,7 @@ object GlueServiceConverters
   private def convert(element: GlueElement): TElement = new {
     def parent: Item = element.unit
     def children: Array[Item] = Array[Item]()
-    def unit: GlueUnit = element.unit
+    def unit: Option[Unit] = Some(element.unit)
   }
 
   private def convert(folder: GlueFolder): TElement = new {
@@ -66,13 +66,13 @@ object GlueServiceConverters
       val units: Array[_ <: Item] = folder.units().sortBy(_.name)
       folders ++ units
     }
-    def unit: GlueUnit = null
+    def unit: Option[Unit] = None
   }
 
   private def convert(gunit: GlueUnit): TElement = new {
     def parent: Item = gunit.folder
     def children: Array[Item] = gunit.elements.values.toArray
-    def unit: GlueUnit = gunit
+    def unit: Option[Unit] = Some(gunit)
   }
 
   private def uuid(item: Item) = item.uuid
@@ -80,6 +80,6 @@ object GlueServiceConverters
   private type TElement = {
     def parent: Item
     def children: Array[Item]
-    def unit: GlueUnit
+    def unit: Option[Unit]
   }
 }

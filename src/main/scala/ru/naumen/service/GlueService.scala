@@ -11,7 +11,7 @@ import ru.naumen.indexes.GlueSearcher
 import scala.reflect.ClassTag
 import scala.concurrent.Future
 import akka.pattern.ask
-import ru.naumen.rep.GlueBase
+import ru.naumen.rep.{GlueUnit, GlueBase}
 import org.json4s.Formats
 import spray.httpx.Json4sJacksonSupport
 
@@ -40,21 +40,34 @@ trait GlueService extends HttpService with GlueServiceOps with Json4sJacksonSupp
   val glueRoute =
     get{
       path("root") {
-          complete{ root() }
+          complete{ root().map[Element](base2Element) } //todo use implicit
       } ~
       path("element" / Rest){ key =>
-            complete{element(key)}
+            complete{ element(key).map[Element](base2Element) }
       } ~
       path("unit"){
-        parameter('id.as[String]){i =>
-          complete{ unit(i) }
+        parameter('id.as[String]){id =>
+          complete{ unit(id).map[Unit](unit2Unit) }
+        }
+      } ~
+      path("text"){
+        parameter('id.as[String]){ id =>
+          parameter('ext.as[String]){ ext =>
+              complete{ unit(id).map(_.elements.get(ext).map(_.text)) }
+          }
+        }
+      } ~
+      path("bytes"){
+        parameter('id.as[String]){ id =>
+          parameter('ext.as[String]){ ext =>
+            complete{ unit(id).map(_.elements.get(ext).map(_.bytes)) }
+          }
         }
       } ~
       path("find") {
         parameter('query.as[String]){q =>
-          complete{find(q)}
+          complete{ find(q).map(_.map(unit2Unit)) }
         }
-
       }
     } ~
     path("init"){
