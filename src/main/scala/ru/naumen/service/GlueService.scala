@@ -1,8 +1,6 @@
 package ru.naumen.service
 
 import spray.routing.HttpService
-import spray.json.DefaultJsonProtocol
-import spray.httpx.SprayJsonSupport._
 import GlueServiceConverters._
 import spray.http.MediaTypes
 import akka.util.Timeout
@@ -14,6 +12,8 @@ import scala.reflect.ClassTag
 import scala.concurrent.Future
 import akka.pattern.ask
 import ru.naumen.rep.GlueBase
+import org.json4s.Formats
+import spray.httpx.Json4sJacksonSupport
 
 
 /**
@@ -24,11 +24,12 @@ import ru.naumen.rep.GlueBase
  * Since: 
  *
  */
-trait GlueService extends HttpService with DefaultJsonProtocol with GlueServiceOps {
-  implicit val unitMessageFormat = jsonFormat7(Unit)
-  implicit val elementMessageFormat = jsonFormat5(Element)
+trait GlueService extends HttpService with GlueServiceOps with Json4sJacksonSupport {
+//  implicit val unitMessageFormat = jsonFormat7(Unit)
+//  implicit val elementMessageFormat = jsonFormat5(Element)
   implicit val timeout = Timeout(15 seconds)
   implicit override def actorContext = actorRefFactory.dispatcher
+  override implicit def json4sJacksonFormats: Formats = org.json4s.DefaultFormats
 
 
 
